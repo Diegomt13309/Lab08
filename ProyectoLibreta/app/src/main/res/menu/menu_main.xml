@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.proyectolibreta.MainActivity">
+    <item
+        android:id="@+id/overflowMenu"
+        android:icon="@drawable/ic_baseline_more_vert_24"
+        android:title=""
+        app:showAsAction="always">
+        <menu>
+    <item
+        android:id="@+id/action_camera"
+        android:orderInCategory="100"
+        android:title="@string/camera_settings"
+        android:icon="@drawable/ic_ar_camera"
+        />
+    <item
+        android:id="@+id/action_location"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_ubicacion"
+        android:title="@string/location_settings"
+         />
+        </menu>
+    </item>
+</menu>
