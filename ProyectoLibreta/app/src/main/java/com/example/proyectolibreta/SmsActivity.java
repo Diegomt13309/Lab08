@@ -3,7 +3,9 @@ package com.example.proyectolibreta;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +38,7 @@ public class SmsActivity extends AppCompatActivity {
     private EditText et;
     private ImageButton ib;
     private ImageView ko;
+    private static final int Image_Capture_Code = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class SmsActivity extends AppCompatActivity {
         cp2 = findViewById(R.id.chipG2);
         et = findViewById(R.id.editTextTextMultiLine);
         ib = findViewById(R.id.imageButton);
+        ko=findViewById(R.id.imageViewk);
 
 
         Bundle extras = getIntent().getExtras();
@@ -70,7 +74,7 @@ public class SmsActivity extends AppCompatActivity {
                     chip.setText(aux.getNumber());
                 }
                 chip.setIconStartPadding(3f);
-                chip.setTextSize(30);
+                chip.setTextSize(25);
                 cp1.addView(chip);
             }
         }
@@ -114,7 +118,7 @@ public class SmsActivity extends AppCompatActivity {
         chip.setPadding(80, 40, 80, 40);
         chip.setText(et.getText().toString());
         et.setText("");
-        chip.setTextSize(18);
+        chip.setTextSize(15);
         cp2.addView(chip);
         //cp2.addView(ko);
     }
@@ -147,8 +151,30 @@ public class SmsActivity extends AppCompatActivity {
     }
 
     private void camera() {
-        Toast toast = Toast.makeText(getApplicationContext(), "Camera", Toast.LENGTH_SHORT);
-        toast.show();
+        Intent cInt = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cInt,Image_Capture_Code);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Image_Capture_Code) {
+            if (resultCode == RESULT_OK) {
+                Bitmap bp = (Bitmap) data.getExtras().get("data");
+                ko.setImageBitmap(bp);
+                final Chip chip = new Chip(this);
+                ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Action);
+                chip.setChipDrawable(drawable);
+                chip.setCheckable(false);
+                chip.setClickable(false);
+                chip.setElevation(20);
+                chip.setPadding(80, 40, 80, 40);
+                chip.setText("Imagen Enviada");
+                chip.setTextSize(15);
+                cp2.addView(chip);
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
 }

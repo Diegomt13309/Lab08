@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        //mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new MainHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
