@@ -4,6 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,7 +43,11 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
     private Datos datos;
     private List<User> usuarios;
     private static int ft=1;
+    private CoordinatorLayout coordinatorLayout;
     private Object User;
+    SensorManager sensorManager;
+    Sensor sensor;
+    SensorEventListener sensorEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,32 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        coordinatorLayout = findViewById(R.id.coordinator_layout);
+
+        sensorManager=(SensorManager)getSystemService(SENSOR_SERVICE);
+        sensor=sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+        if(sensor==null){
+
+        }
+        sensorEventListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                if(event.values[0]<sensor.getMaximumRange()){
+                    coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                }else{
+                    coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+            }
+        };
+
+
+
 
 
         mRecyclerView = findViewById(R.id.recyclerView);
@@ -58,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
                         .setAction("Action", null).show();
             }
         });
+
+        start();
 
         usuarios = new ArrayList<>();
         datos = new Datos();
@@ -88,6 +124,26 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+
+    public void start(){
+        sensorManager.registerListener(sensorEventListener,sensor,2000*1000);
+    }
+    public void stop(){
+        sensorManager.unregisterListener(sensorEventListener);
+    }
+
+    @Override
+    protected void onPause() {
+        stop();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        start();
+        super.onResume();
     }
 
     @Override
