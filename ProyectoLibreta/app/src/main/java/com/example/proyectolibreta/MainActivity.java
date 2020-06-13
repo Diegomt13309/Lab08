@@ -60,9 +60,6 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
         sensorManager=(SensorManager)getSystemService(SENSOR_SERVICE);
         sensor=sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
-        if(sensor==null){
-
-        }
         sensorEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
@@ -72,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
                     coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 }
             }
-
             @Override
             public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
@@ -80,16 +76,12 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
         };
 
 
-
-
-
         mRecyclerView = findViewById(R.id.recyclerView);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                addNew();
             }
         });
 
@@ -117,6 +109,11 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
         mAdapter.notifyDataSetChanged();
 
+    }
+
+    private void addNew() {
+        Intent intent = new Intent(this, addUser.class);
+        startActivity(intent);
     }
 
     @Override

@@ -5,18 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.telephony.SmsManager;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,6 +35,10 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import Model.User;
 
@@ -92,9 +101,9 @@ public class SmsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     try {
-                        SmsManager smgr = SmsManager.getDefault();
+                       /* SmsManager smgr = SmsManager.getDefault();
                         smgr.sendTextMessage(mU.getNumber().toString(), null, et.getText().toString(), null, null);
-                        Toast.makeText(SmsActivity.this, "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SmsActivity.this, "SMS Sent Successfully", Toast.LENGTH_SHORT).show();*/
                         sendMessage(v);
                     } catch (Exception e) {
                         Toast.makeText(SmsActivity.this, "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
@@ -111,17 +120,32 @@ public class SmsActivity extends AppCompatActivity {
     }
 
     public void sendMessage(View v){
-        final Chip chip = new Chip(this);
+
+        TextView textoMsg = new TextView(SmsActivity.this);
+        textoMsg.setText(et.getText().toString());
+        textoMsg.setTextSize(12);
+        textoMsg.setGravity(Gravity.CENTER);
+        textoMsg.setTextColor(getResources().getColor(android.R.color.black));
+        textoMsg.setPadding(80,60,80,60);
+
+        textoMsg.setBackground(getResources().getDrawable(R.drawable.ic_text_message));
+
+        et.setText("");
+        cp2.addView(textoMsg,0);
+
+
+
+        /*final Chip chip = new Chip(this);
         ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Action);
         chip.setChipDrawable(drawable);
         chip.setCheckable(false);
         chip.setClickable(false);
-        chip.setElevation(20);
-        chip.setPadding(80, 40, 80, 40);
+        chip.setElevation(5);
+        chip.setPadding(100, 100, 100, 100);
         chip.setText(et.getText().toString());
         et.setText("");
-        chip.setTextSize(15);
-        cp2.addView(chip);
+        String k = "Vamosnos a la playa";
+        cp2.addView();*/
     }
 
     @Override
@@ -150,9 +174,24 @@ public class SmsActivity extends AppCompatActivity {
         LocationManager locationManager = (LocationManager) SmsActivity.this.getSystemService(Context.LOCATION_SERVICE);
 
         LocationListener locationListener = new LocationListener() {
+
+
+
             @Override
             public void onLocationChanged(Location location) {
-                et.setText(location.getLatitude()+" "+location.getLongitude());
+                Geocoder geocoder;
+                List<Address> addresses;
+                geocoder = new Geocoder(SmsActivity.this, Locale.getDefault());
+
+                try {
+                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                    String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                    et.setText(address);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
             }
 
             @Override
@@ -171,7 +210,7 @@ public class SmsActivity extends AppCompatActivity {
             }
         };
         permissionCheck = ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,30000,50,locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,100,50,locationListener);
     }
 
     private void camera() {
@@ -185,16 +224,15 @@ public class SmsActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Bitmap bp = (Bitmap) data.getExtras().get("data");
                 ko.setImageBitmap(bp);
-                final Chip chip = new Chip(this);
-                ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Action);
-                chip.setChipDrawable(drawable);
-                chip.setCheckable(false);
-                chip.setClickable(false);
-                chip.setElevation(20);
-                chip.setPadding(80, 40, 80, 40);
-                chip.setText("Imagen Enviada");
-                chip.setTextSize(15);
-                cp2.addView(chip);
+                TextView textoMsg = new TextView(SmsActivity.this);
+                textoMsg.setText("Imagen Enviada");
+                textoMsg.setTextSize(12);
+                textoMsg.setGravity(Gravity.CENTER);
+                textoMsg.setTextColor(getResources().getColor(android.R.color.black));
+                textoMsg.setPadding(80,60,80,60);
+                textoMsg.setBackground(getResources().getDrawable(R.drawable.ic_text_message));
+                et.setText("");
+                cp2.addView(textoMsg,0);
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             }

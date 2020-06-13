@@ -10,8 +10,13 @@
 
     <string name="call">LLamar</string>
     <string name="sms">Mensaje</string>
+    <string name="NuevoC">Nuevo Contacto</string>
+    <string name="Nombre">Nombre</string>
+    <string name="Titulo">Titulo o Segundo Nombre</string>
+    <string name="Telefono">Telefono</string>
 
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_add_user">Nuevo Contacto</string>
 </resources>
