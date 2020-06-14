@@ -3,6 +3,7 @@ package com.example.proyectolibreta;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -29,9 +30,12 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import Model.Datos;
 import Model.SingletonFormList;
@@ -44,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
     private List<User> usuarios;
     private static int ft=1;
     private CoordinatorLayout coordinatorLayout;
+    private FloatingActionButton fab;
     private Object User;
     SensorManager sensorManager;
     Sensor sensor;
@@ -56,6 +61,17 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         coordinatorLayout = findViewById(R.id.coordinator_layout);
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addNew();
+            }
+        });
+
+        View inflatedView = getLayoutInflater().inflate(R.layout.item_list_row, null);
+        final TextView text = (TextView) inflatedView.findViewById(R.id.descriptionLbl);
+
 
         sensorManager=(SensorManager)getSystemService(SENSOR_SERVICE);
         sensor=sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
@@ -63,10 +79,14 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
         sensorEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
+                int[] androidColors = getResources().getIntArray(R.array.androidcolors);
+                int randomAndroidColor = androidColors[new Random().nextInt(androidColors.length)];
+
+                int[] androidColors1 = getResources().getIntArray(R.array.androidcolors);
+                int randomAndroidColor1 = androidColors1[new Random().nextInt(androidColors.length)];
                 if(event.values[0]<sensor.getMaximumRange()){
-                    coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                }else{
-                    coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    coordinatorLayout.setBackgroundColor(randomAndroidColor);
+                    fab.setBackgroundTintList(ColorStateList.valueOf(randomAndroidColor1));
                 }
             }
             @Override
@@ -77,13 +97,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
 
 
         mRecyclerView = findViewById(R.id.recyclerView);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addNew();
-            }
-        });
+
 
         start();
 
@@ -102,17 +116,52 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        //mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new MainHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
+
+        checkIntentInformation();
         mAdapter.notifyDataSetChanged();
 
+
+
+    }
+
+    private void checkIntentInformation() {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            User aux;
+            aux = (User) getIntent().getSerializableExtra("addUser");
+            if (aux == null) {
+                aux = (User) getIntent().getSerializableExtra("editUser");
+                if (aux != null) {
+                    boolean founded = false;
+                    for (User users : usuarios) {
+                        if (users.getId()==aux.getId()) {
+                            users.setName(aux.getName());
+                            users.setLastName(aux.getLastName());
+                            users.setNumber(aux.getNumber());
+                            founded = true;
+                            break;
+                        }
+                    }
+                    if (founded) {
+                        Toast.makeText(getApplicationContext(), aux.getName() + " editado correctamente", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), aux.getName() + " no encontrado", Toast.LENGTH_LONG).show();
+                    }
+                }
+            } else {
+                usuarios=SingletonFormList.getInstance().getArray();
+                Toast.makeText(getApplicationContext(), aux.getName() + " agregado correctamente", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     private void addNew() {
         Intent intent = new Intent(this, addUser.class);
+        intent.putExtra("editable", false);
         startActivity(intent);
     }
 
@@ -160,7 +209,11 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
 
     @Override
     public void onContactSelected(User user) {
-
+        String h = user.getName();
+        Intent intent = new Intent(this, addUser.class);
+        intent.putExtra("editable", true);
+        intent.putExtra("user", user);
+        startActivity(intent);
     }
 
     @Override
@@ -170,22 +223,25 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
                 //SMS
                 // get the removed item name to display it in snack bar
                 User aux = usuarios.get(viewHolder.getAdapterPosition());
-
-                Intent intent = new Intent(this, SmsActivity.class);
-                intent.putExtra("user", aux);
-                mAdapter.notifyDataSetChanged(); //restart left swipe view
-                startActivity(intent);
+                String val = aux.getNumber();
+                String h = val.substring(0,1);
+                if(!h.equals("2")) {
+                    Intent intent = new Intent(this, SmsActivity.class);
+                    intent.putExtra("user", aux);
+                    mAdapter.notifyDataSetChanged(); //restart left swipe view
+                    startActivity(intent);
+                }else{
+                    mAdapter.notifyDataSetChanged();
+                    Toast.makeText(getApplicationContext(), "No se puede enviar mensajes a numeros fijos", Toast.LENGTH_LONG).show();
+                }
+                mAdapter.notifyDataSetChanged();
             }
         } else {
-            //Call
             User aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
             callPhoneNumber(aux);
             mAdapter.notifyDataSetChanged();
         }
-
     }
-
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
@@ -229,6 +285,6 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.JobFo
 
     @Override
     public void onItemMove(int source, int target) {
-
+        mAdapter.onItemMove(source, target);
     }
 }

@@ -68,7 +68,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> 
         holder.title1.setText(user.getName());
         holder.title2.setText(user.getLastName());
         holder.description.setText(user.getNumber());
-        //holder.description2.setText(user.getApplyingJob());
     }
 
     @Override

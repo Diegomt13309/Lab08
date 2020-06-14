@@ -11,7 +11,7 @@
     android:layout_margin="10dp"
     card_view:cardCornerRadius="20dp"
     card_view:cardElevation="20dp"
-    android:background="@android:color/white"
+    android:background="@drawable/aback2"
     >
 
     <RelativeLayout
@@ -32,15 +32,6 @@
             android:src="@drawable/ic_llamada"
             />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/padd_10"
-            android:layout_toRightOf="@id/edit_icon"
-            android:text="@string/call"
-            android:textColor="#fff"
-            android:textSize="13dp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -60,16 +51,6 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/padd_10"
             android:src="@drawable/ic_sms" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/padd_10"
-            android:layout_toLeftOf="@id/delete_icon"
-            android:text="@string/sms"
-            android:textColor="#fff"
-            android:textSize="13dp" />
     </RelativeLayout>
 
     <LinearLayout
@@ -79,9 +60,9 @@
 
         <RelativeLayout
             android:id="@+id/view_foreground"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="110dp"
+            android:background="@drawable/aback2"
             android:padding="@dimen/padd_10">
 
             <TextView
@@ -95,31 +76,35 @@
                 android:textSize="25sp" />
 
             <TextView
-                android:id="@+id/titleSecLbl"
+                android:id="@+id/descriptionLbl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/padd_10"
-                android:layout_toRightOf="@id/titleFirstLbl"
+                android:layout_marginStart="150dp"
+                android:layout_marginLeft="79dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="200dp"
+                android:layout_toRightOf="@id/imageView6"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-medium"
                 android:maxLines="1"
-                android:textColor="@color/description"
-                android:textSize="25sp" />
+                android:textColor="#ff8000"
+                android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/descriptionLbl"
+                android:id="@+id/titleSecLbl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/titleFirstLbl"
                 android:layout_marginTop="5dp"
-                android:textColor="@color/description"
+                android:layout_marginStart="20dp"
+                android:textColor="#ff8000"
                 android:textSize="20sp" />
 
             <ImageView
                 android:id="@+id/imageView6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
+                android:layout_width="46dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
                 app:srcCompat="@drawable/ic_contacto" />
 
         </RelativeLayout>

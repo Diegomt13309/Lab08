@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/svP"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme.AppBarOverlay"
     android:layout_width="wrap_content">
 
 <RelativeLayout
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#FF8000"
     >
@@ -22,36 +24,31 @@
             android:layout_height="53dp"
             android:layout_marginBottom="10dp"
             android:background="#FFFF">
-
         </com.google.android.material.chip.ChipGroup>
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/svC"
             android:layout_width="match_parent"
-            android:background="#FFFF"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/imageViewk"
-                android:layout_width="156dp"
-                android:layout_height="match_parent" />
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/chipG2"
-
+            android:layout_height="match_parent">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="394dp"
-                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
                 android:background="#FFFF"
-                android:orientation="vertical"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
-                app:flexWrap="wrap_reverse"
-                app:justifyContent="flex_end"
-                app:maxLine="10">
-
-            </com.google.android.flexbox.FlexboxLayout>
-        </LinearLayout>
+                android:orientation="horizontal">
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/chipG2"
+                    android:layout_width="match_parent"
+                    android:layout_height="402dp"
+                    android:background="#FFFF"
+                    android:orientation="vertical"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    app:flexWrap="wrap_reverse"
+                    app:justifyContent="flex_end"
+                    app:layout_wrapBefore="true">
+                </com.google.android.flexbox.FlexboxLayout>
+            </LinearLayout>
+        </ScrollView>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

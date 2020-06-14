@@ -15,13 +15,11 @@ public class Datos implements Serializable {
     }
 
     private void iniciarU() {
-        User k = new User("Melania","Benavides","88325476");
+        User k = new User("Melania","Benavides","88325476",7);
         this.usuarios.add(k);
-        k = new User("Casa","Familia","22624812");
+        k = new User("Casa","Familia","22624812",8);
         this.usuarios.add(k);
-        k = new User("Diego","Monterrey","87101280");
-        this.usuarios.add(k);
-        k = new User("Dj","Hernandez","88333015");
+        k = new User("Dj","Hernandez","88333015",4);
         this.usuarios.add(k);
     }
 

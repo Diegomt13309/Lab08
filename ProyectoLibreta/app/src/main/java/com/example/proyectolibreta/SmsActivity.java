@@ -1,6 +1,7 @@
 package com.example.proyectolibreta;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,17 +14,21 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,31 +49,26 @@ import Model.User;
 
 public class SmsActivity extends AppCompatActivity {
 
-    private EditText txtMobile;
-    private EditText txtMessage;
-    private Button btnSms;
+    private ScrollView scrollViewP;
+    private ScrollView scrollViewC;
     private ChipGroup cp1;
     private FlexboxLayout cp2;
     private EditText et;
     private ImageButton ib;
-    private ImageView ko;
     private int permissionCheck;
     private User mU;
     private static final int Image_Capture_Code = 1;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms);
 
-
-        //txtMobile = (EditText) findViewById(R.id.mblTxt);
-        //txtMessage = (EditText) findViewById(R.id.msgTxt);
         cp1 = findViewById(R.id.chipG1);
         cp2 = findViewById(R.id.chipG2);
         et = findViewById(R.id.editTextTextMultiLine);
         ib = findViewById(R.id.imageButton);
-        ko=findViewById(R.id.imageViewk);
 
 
         Bundle extras = getIntent().getExtras();
@@ -101,15 +101,17 @@ public class SmsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     try {
-                       /* SmsManager smgr = SmsManager.getDefault();
+                       SmsManager smgr = SmsManager.getDefault();
                         smgr.sendTextMessage(mU.getNumber().toString(), null, et.getText().toString(), null, null);
-                        Toast.makeText(SmsActivity.this, "SMS Sent Successfully", Toast.LENGTH_SHORT).show();*/
+                        Toast.makeText(SmsActivity.this, "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
                         sendMessage(v);
                     } catch (Exception e) {
                         Toast.makeText(SmsActivity.this, "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
+
+
     }
 
     @Override
@@ -131,21 +133,7 @@ public class SmsActivity extends AppCompatActivity {
         textoMsg.setBackground(getResources().getDrawable(R.drawable.ic_text_message));
 
         et.setText("");
-        cp2.addView(textoMsg,0);
-
-
-
-        /*final Chip chip = new Chip(this);
-        ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Action);
-        chip.setChipDrawable(drawable);
-        chip.setCheckable(false);
-        chip.setClickable(false);
-        chip.setElevation(5);
-        chip.setPadding(100, 100, 100, 100);
-        chip.setText(et.getText().toString());
-        et.setText("");
-        String k = "Vamosnos a la playa";
-        cp2.addView();*/
+        cp2.addView(textoMsg, 0);
     }
 
     @Override
@@ -174,15 +162,11 @@ public class SmsActivity extends AppCompatActivity {
         LocationManager locationManager = (LocationManager) SmsActivity.this.getSystemService(Context.LOCATION_SERVICE);
 
         LocationListener locationListener = new LocationListener() {
-
-
-
             @Override
             public void onLocationChanged(Location location) {
                 Geocoder geocoder;
                 List<Address> addresses;
                 geocoder = new Geocoder(SmsActivity.this, Locale.getDefault());
-
                 try {
                     addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                     String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
@@ -190,20 +174,15 @@ public class SmsActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
             }
-
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
 
             }
-
             @Override
             public void onProviderEnabled(String provider) {
 
             }
-
             @Override
             public void onProviderDisabled(String provider) {
 
@@ -223,18 +202,16 @@ public class SmsActivity extends AppCompatActivity {
         if (requestCode == Image_Capture_Code) {
             if (resultCode == RESULT_OK) {
                 Bitmap bp = (Bitmap) data.getExtras().get("data");
-                ko.setImageBitmap(bp);
-                TextView textoMsg = new TextView(SmsActivity.this);
-                textoMsg.setText("Imagen Enviada");
-                textoMsg.setTextSize(12);
-                textoMsg.setGravity(Gravity.CENTER);
-                textoMsg.setTextColor(getResources().getColor(android.R.color.black));
-                textoMsg.setPadding(80,60,80,60);
-                textoMsg.setBackground(getResources().getDrawable(R.drawable.ic_text_message));
+                ImageView imageView = new ImageView(SmsActivity.this);
+                imageView.setImageBitmap(bp);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(450, 450);
+                imageView.setLayoutParams(layoutParams);
+                imageView.setPadding(10,10,10,10);
+                imageView.setBackground(getResources().getDrawable(R.drawable.ic_frame));
                 et.setText("");
-                cp2.addView(textoMsg,0);
+                cp2.addView(imageView,0);
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Cancelado", Toast.LENGTH_LONG).show();
             }
         }
     }
