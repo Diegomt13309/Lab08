@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Proyecto Libreta</string>
-    <string name="camera_settings">Camera</string>
-    <string name="location_settings">Location</string>
+    <string name="camera_settings">Camara</string>
+    <string name="location_settings">Ubicacion</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

@@ -21,6 +21,10 @@ public class Datos implements Serializable {
         this.usuarios.add(k);
         k = new User("Dj","Hernandez","88333015",4);
         this.usuarios.add(k);
+        k = new User("Abuela","Familia","22601378",5);
+        this.usuarios.add(k);
+        k = new User("Jonathan","Estrada","72029586",6);
+        this.usuarios.add(k);
     }
 
     public List<User> getUsuarios() {
